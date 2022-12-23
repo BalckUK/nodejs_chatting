@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+    </head>
+    <body>
+        <div class="wrapper">
+            <div class="user-container">대화명 :
+                <input tpye="text" id="nickname"/>
+            </div>
+            <div class="display-container">
+                <ul class="chatting-list">
+                    <!--채팅하니씩 li로 집어 넣을 것-->
+                </ul>
+            </div>
+            <div class="input-container">
+                <input type="text" class="chatting-input"/>
+                <button class="send-button">전송</button>
+            </div>
+        </div>
+
+        <script
+            src="https://cdn.socket.io/4.5.4/socket.io.min.js"
+            integrity="sha384-/KNQL8Nu5gCHLqwqfQjA689Hhoqgi2S84SNUxC3roTe4EhJ9AfLkp8QiQcU8AMzI"
+            crossorigin="anonymous"></script>
+        <script>
+            const socket = io();
+            // console.log(socket);
+            // socket.emit('chatting', 'from front'); //1. 소켓 보내기
+            //2. 서버에서 받아주는 코드 작성하기 (app.js 에서) 서버로부터 프론트로 보내는 메시지 받기
+           /*  socket.on('chatting', (data) => {
+                console.log(data);
+            }) */
+
+            const nickname = document.querySelector('#nickname');
+            const chatList = document.querySelector('.chatting-list');
+            const chatInput = document.querySelector('.chatting-input');
+            const snedButton = document.querySelector('.send-button');
+
+            snedButton.addEventListener('click', () => {
+                const param = {
+                    name: nickname.value,
+                    msg: chatInput.value
+                };
+                socket.emit('chatting', param);
+            });
+
+            //소켓을 받았을 때 li로 추가
+            socket.on('chatting', (data) => {
+                const li = document.createElement('li');
+                console.log(data.name)
+                console.log(data.msg)
+                li.innerText = `${data.name} : ${data.msg}`;
+                chatList.appendChild(li);
+            });
+        </script>
+    </body>
+</html>
